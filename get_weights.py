@@ -11,6 +11,7 @@ def get_weights(risk_free_rate: int, market_return: int, df: pd.DataFrame):
     eth = df['ETH']
 
     # Drop ETH column and not useful columns
+    df = df.drop(columns=['DAI', 'FLOKI'])
     df = df.drop(columns=df.columns[df.columns.str.contains('ETH|USD')])
     returns = df.pct_change()
 
