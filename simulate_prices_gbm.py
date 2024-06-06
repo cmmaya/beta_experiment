@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def simulate_gbm(assets, initial_price=100, time_horizon=1, n_steps=100, seed=None):
+def simulate_gbm(assets, initial_price=100, time_horizon=100, n_steps=100, seed=None):
     """
     Simulate asset prices using Geometric Brownian Motion.
 
