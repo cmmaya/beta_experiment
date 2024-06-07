@@ -1,25 +1,29 @@
 import pandas as pd
-from extract_drift_and_volatility import extract_drift_and_volatility
 from simulate_prices_gbm import simulate_gbm
 import matplotlib.pyplot as plt
 import numpy as np
-
+# Read historical prices and discard non useful assets
 df = pd.read_csv('historical_prices.csv')
-df = df.drop(columns=['BTC', 'BNB', 'ETH', 'FLOKI', 'SOL', 'DAI'])
+df = df.drop(columns=['FLOKI', 'DAI'])
 df = df.drop(columns=df.columns[df.columns.str.contains('ETH|USD')])
-assets_params = extract_drift_and_volatility(df)
-prices_gbm = simulate_gbm(assets_params)
+
+# Run GBM simulation
+T = 1
+dt = 1/365
+prices_gbm = simulate_gbm(df, T, dt)
 
 
 # Plot each asset price series
+num_assets = np.shape(df)[1]
+
 plt.figure(figsize=(12, 8))
-for column in prices_gbm.columns:
-    plt.plot(df.index, df[column], label=column)
+
+for i in range(num_assets):
+    plt.plot(prices_gbm[i, :], label=df.columns[i])
 
 # Position the legend outside the plot area
 plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.xlabel('Time Step')
-
 plt.ylabel('Price')
 plt.title('Asset Prices Over Time')
 plt.grid(True)
