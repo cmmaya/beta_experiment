@@ -1,42 +1,41 @@
 import numpy as np
 import pandas as pd
 
-def simulate_gbm(assets, initial_price=100, time_horizon=100, n_steps=100, seed=None):
+def simulate_gbm(df: pd.DataFrame, T: int, dt: float):
     """
-    Simulate asset prices using Geometric Brownian Motion.
+    Simulate multivariate geometric Brownian Motion.
 
     Parameters:
-    - assets: List of tuples [(asset_name, drift, volatility), ...]
-    - initial_price: Starting price for all assets
-    - time_horizon: Total time for the simulation in years
-    - n_steps: Number of time steps in the simulation
-    - seed: Random seed for reproducibility
-
-    Returns:
-    - DataFrame containing simulated asset prices over time
+        de : pd.DataFrame
+            Data Frame with historical prices of assets
+        T : float
+            Total time in days
+        dt : float
+            Time step in years
     """
-    if seed is not None:
-        np.random.seed(seed)
-        
-    dt = time_horizon / n_steps
-    n_assets = len(assets)
+    num_steps = int(T / dt)
+    num_assets = np.shape(df)[1]
+    num_days = np.shape(df)[0]
+
+    log_returns = np.log(df / df.shift(1)) # Returns
+    sigma = log_returns.std() * np.sqrt(365/num_days)  # Volatility coefficients
+    mu = log_returns.mean() + (sigma*sigma)/2  # Drift coefficients
+
+    # Calculate the covariance matrix of returns and adjust the diagonal to be positive definite
+    cov_matrix = log_returns.cov() 
+    cov_matrix = np.nan_to_num(cov_matrix, nan=0.001)
+    cov_matrix = cov_matrix + 0.01 * np.eye(np.shape(cov_matrix)[0])
+
+    # Preparing the Cholesky decomposition for simulating correlated variables
+    L = np.linalg.cholesky(cov_matrix)
+
+    # Simulating the random components
+    Z = np.random.normal(size=(num_assets, num_steps))
+
+    prices = np.zeros((num_assets, num_steps))
+    prices[:, 0] = df.iloc[-1].values # Initialize with last prices reported
+
+    for i in range(1, num_steps):
+        prices[:, i] = prices[:, i-1] * np.exp((mu - 0.5 * sigma**2) * dt + np.dot(L, Z[:, i]) * np.sqrt(dt))
     
-    # Initialize the price matrix
-    prices = np.zeros((n_steps + 1, n_assets))
-    prices[0, :] = initial_price
-    
-    # Create time index
-    time_index = np.linspace(0, time_horizon, n_steps + 1)
-    
-    # Simulate asset prices
-    for i, (name, drift, volatility) in enumerate(assets):
-        drift = drift / 100
-        volatility = volatility / 100
-        for t in range(1, n_steps + 1):
-            z = np.random.standard_normal()
-            prices[t, i] = prices[t-1, i] * np.exp((drift - 0.5 * volatility**2) * dt + volatility * np.sqrt(dt) * z)
-    
-    # Convert to DataFrame
-    price_df = pd.DataFrame(prices, columns=[name for name, _, _ in assets], index=time_index)
-    
-    return price_df
+    return prices
