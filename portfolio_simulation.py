@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from extract_drift_and_volatility import extract_drift_and_volatility
 from simulate_prices_gbm import simulate_gbm
 from get_weights import get_weights
 
@@ -12,10 +11,12 @@ market_return = 0.5
 
 # Obtain historical prices
 df = pd.read_csv('historical_prices.csv')
-assets_params = extract_drift_and_volatility(df)
-prices_gbm = simulate_gbm(assets_params)
+# Run GBM simulation
+T = 1
+dt = 1/365
+prices_gbm = simulate_gbm(df, T, dt)
 
-
+# Obtain returns lists
 returns = prices_gbm.pct_change()
 eth = prices_gbm['ETH']
 eth_returns = eth.pct_change()
@@ -27,8 +28,6 @@ eth_returns = eth_returns.replace([np.nan, np.inf, -np.inf], 0)
 weights = get_weights(risk_free_rate, market_return, prices_gbm)
 min_variance_weights = weights['Min Weight']
 max_sharpe_weights = weights['Max Weight']
-
-num_assets = len(weights)
 
 # Extract non zero weight assets
 filtered_max_sharpe= weights[weights['Max Weight'] != 0]

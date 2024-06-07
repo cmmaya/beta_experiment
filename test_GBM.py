@@ -18,8 +18,8 @@ num_assets = np.shape(df)[1]
 
 plt.figure(figsize=(12, 8))
 
-for i in range(num_assets):
-    plt.plot(prices_gbm[i, :], label=df.columns[i])
+for column in prices_gbm.columns:
+    plt.plot(prices_gbm.index, prices_gbm[column], label=column)
 
 # Position the legend outside the plot area
 plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')

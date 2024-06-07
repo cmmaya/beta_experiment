@@ -37,5 +37,7 @@ def simulate_gbm(df: pd.DataFrame, T: int, dt: float):
 
     for i in range(1, num_steps):
         prices[:, i] = prices[:, i-1] * np.exp((mu - 0.5 * sigma**2) * dt + np.dot(L, Z[:, i]) * np.sqrt(dt))
+
+    prices = pd.DataFrame(prices.T, columns=df.columns)
     
     return prices
