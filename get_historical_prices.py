@@ -88,7 +88,7 @@ aux = {}
 # Fetch historical data for each symbol
 for symbol in top_tokens.symbol:
     try:
-        historical_data = get_historical_data(symbol+'USDT', datetime(2024, 1, 1))
+        historical_data = get_historical_data(symbol+'USDT', datetime(2023, 1, 1))
         aux[symbol] = historical_data['close']
         time.sleep(1)  # Sleep to avoid hitting API rate limits
     except Exception as e:
