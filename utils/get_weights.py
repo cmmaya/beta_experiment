@@ -33,7 +33,8 @@ def get_weights(risk_free_rate: int, market_return: int, df: pd.DataFrame):
 
             beta = covariance / variance
             betas[column] = beta
-
+    
+    betas_list = np.array(list(betas.values()))
     # CAPM Expected Returns
 
     # Simulated covariance matrix based on betas (scaled for demonstration)
@@ -50,8 +51,12 @@ def get_weights(risk_free_rate: int, market_return: int, df: pd.DataFrame):
 
     def portfolio_return(weights):
         return weights.T @ expected_returns
+    
 
     target_beta = 1.0
+
+    def portfolio_variance_objective(weights):
+        return weights.T @ cov_matrix @ weights + (betas_list.T @ weights - target_beta)**2
 
     # Calculate portfolio beta as a function of weights
     def portfolio_beta(weights):
@@ -61,7 +66,6 @@ def get_weights(risk_free_rate: int, market_return: int, df: pd.DataFrame):
     # Constraint to achieve the target beta
     constraints = [
         {'type': 'eq', 'fun': lambda x: np.sum(x) - 1},  # Weights must sum to 1
-        {'type': 'eq', 'fun': lambda x: (portfolio_beta(x) - target_beta)**2}  # Portfolio beta must meet target
     ]
     bounds = tuple((0, 1) for asset in range(num_assets))
 
@@ -69,16 +73,16 @@ def get_weights(risk_free_rate: int, market_return: int, df: pd.DataFrame):
     init_guess = np.ones(num_assets) / num_assets
 
     # Portfolio optimization for minimum variance
-    opt_min_var = minimize(portfolio_variance, init_guess, method='SLSQP', bounds=bounds, constraints=constraints)
+    opt_min_var = minimize(portfolio_variance_objective, init_guess, method='SLSQP', bounds=bounds, constraints=constraints)
     min_var_weights = opt_min_var.x
 
     # Portfolio optimization for maximum Sharpe Ratio (Risk-Free Rate: 1%)
     constraints = [
         {'type': 'eq', 'fun': lambda x: np.sum(x) - 1},  # Weights must sum to 1
-        {'type': 'eq', 'fun': lambda x: -(portfolio_beta(x) - target_beta)**2}  # Portfolio beta must meet target
     ]
+
     def neg_sharpe_ratio(weights):
-        return - (portfolio_return(weights) - risk_free_rate) / np.sqrt(portfolio_variance(weights))
+        return - (portfolio_return(weights) - risk_free_rate) / np.sqrt(portfolio_variance(weights)) + np.abs((betas_list.T @ weights - target_beta))
 
     opt_max_sharpe = minimize(neg_sharpe_ratio, init_guess, method='SLSQP', bounds=bounds, constraints=constraints)
     max_sharpe_weights = opt_max_sharpe.x
