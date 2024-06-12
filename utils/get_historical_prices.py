@@ -97,4 +97,13 @@ for symbol in top_tokens.symbol:
 # Convert dictionary to DataFrame
 df = pd.DataFrame(aux)
 
-df.to_csv('historical_prices.csv', index=False)
+# Specify the file path where you want to save the CSV file
+file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'historical_prices.csv')
+
+# Create the directory if it doesn't exist
+os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+# Save the DataFrame to a CSV file
+df.to_csv(file_path, index=False)
+
+print(f"CSV file saved to {file_path}")

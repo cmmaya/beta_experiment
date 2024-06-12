@@ -2,15 +2,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from simulate_prices_gbm import simulate_gbm
-from get_weights import get_weights
+from utils.simulate_prices_gbm import simulate_gbm
+from utils.get_weights import get_weights
 
 # weights
 risk_free_rate = 0.05
 market_return = 0.5
 
 # Obtain historical prices
-df = pd.read_csv('historical_prices.csv')
+df = pd.read_csv('data/historical_prices.csv')
 # Run GBM simulation
 T = 1
 dt = 1/365

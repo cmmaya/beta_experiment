@@ -1,9 +1,9 @@
 import pandas as pd
-from simulate_prices_gbm import simulate_gbm
+from utils.simulate_prices_gbm import simulate_gbm
 import matplotlib.pyplot as plt
 import numpy as np
 # Read historical prices and discard non useful assets
-df = pd.read_csv('historical_prices.csv')
+df = pd.read_csv('data/historical_prices.csv')
 df = df.drop(columns=['FLOKI', 'DAI'])
 df = df.drop(columns=df.columns[df.columns.str.contains('ETH|USD')])
 
