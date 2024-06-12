@@ -1,7 +1,15 @@
 import pandas as pd
-from utils.simulate_prices_gbm import simulate_gbm
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
+import os
+
+# Get the parent directory of the current directory
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.insert(0, parent_dir)
+
+from utils.simulate_prices_gbm import simulate_gbm
+
 # Read historical prices and discard non useful assets
 df = pd.read_csv('data/historical_prices.csv')
 df = df.drop(columns=['FLOKI', 'DAI'])
