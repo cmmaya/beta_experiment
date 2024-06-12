@@ -1,7 +1,16 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+import os
 
+# Get the parent directory of the current directory
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+
+# Add the parent directory to the beginning of sys.path
+sys.path.insert(0, parent_dir)
+
+# Now you can import modules from the parent directory
 from utils.simulate_prices_gbm import simulate_gbm
 from utils.get_weights import get_weights
 
