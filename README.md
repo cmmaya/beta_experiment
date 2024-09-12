@@ -2,7 +2,7 @@
 
 In these quick notes we aim at answeting the question:
 
-_What is the most superior vehicle of exposure a long ETH beta ($β$) position (risk-adjusted)?_
+_What is the most superior vehicle of exposure a long ETH beta (β) position (risk-adjusted)?_
 
 In this specific case, "ETH beta" refers to the measure of how much a token $\mathsf{X}$ as an investment is expected to respond to swings in the price of ETH. This can be particularly useful for investors trying to understand the risk-reward profile of holding $\mathsf{X}$ relative to ETH, especially in a risk-adjusted context.
 
@@ -17,7 +17,7 @@ Let:
 
 The beta of Ethereum ($\beta_\text{ETH}$) can be calculated by the formula:
 
-$$ \beta*{\mathsf{X}} = \frac{\text{Cov}(r*\mathsf{X}, r*\text{ETH})}{\text{Var}(r*\mathsf{X})} $$
+$$ \beta*{\mathsf{X}} = \frac{\text{Cov}(r*\mathsf{X}, r*\text{ETH})}{\text{Var}(r*\mathsf{X})}$$
 
 Where:
 
@@ -29,7 +29,7 @@ Where:
 1. **Collect Data**: Obtain historical price data for Ethereum and the market index. This could be daily, weekly, or monthly closing prices depending on the desired analysis period.
 
 2. **Compute Returns**: Calculate the periodic returns from the price data. The return at time $t$ fo token $a$, $r_{t,a}$, can be calculated using the formula:
-   $$ r*{t,a} = \frac{P*{t,a} - P*{t-1,a}}{P*{t-1,a}} $$
+   $$r*{t,a} = \frac{P*{t,a} - P*{t-1,a}}{P*{t-1,a}}$$
    where $P_{t,a}$ is the price of token $a$ at time $t$ and $P_{t-1,a}$ is the price of token $a$ at time $t-1$.
 
 3. **Calculate Covariance and Variance**: Use the return series to compute the covariance of Ethereum's returns with the market's returns, and the variance of the market's returns.
@@ -52,9 +52,9 @@ We want to utilize the concept of beta where Ethereum (ETH) is the reference mar
 
 The beta of Portfolio X relative to Ethereum (ETH) is the weighted sum of the betas of the individual assets in the portfolio:
 
-$$ \beta*\mathsf{X} = \sum*{i=1}^n w*i \beta*{x_i} $$
+$$\beta \mathbf{X} = \sum_{i=1}^n w_i \beta x_i$$
 
-Here, $\beta\_{x_i} $ is the beta of asset $ x_i $ with respect to Ethereum, and $ w_i $ is the weight of asset $ x_i $ in Portfolio X.
+Here, $\beta\_{x_i}$ is the beta of asset $x_i$ with respect to Ethereum, and $w_i$ is the weight of asset $x_i$ in Portfolio X.
 
 ## Objective Function
 
@@ -68,14 +68,14 @@ The goal could be to minimize variance, maximize returns, or find an optimal tra
 
 ## Risk and Return Models
 
-- **Return Estimation**: Expected returns of assets $ \mu_i $ can be forecasted based on historical data or using a pricing model like the Capital Asset Pricing Model (CAPM).
-- **Risk Estimation**: Covariance matrix of asset returns, $ \Sigma $, which captures the variance of each asset and the covariances between them.
+- **Return Estimation**: Expected returns of assets $\mu_i$ can be forecasted based on historical data or using a pricing model like the Capital Asset Pricing Model (CAPM).
+- **Risk Estimation**: Covariance matrix of asset returns, $\Sigma$, which captures the variance of each asset and the covariances between them.
 
 ## Optimization
 
 - **Minimize Risk**: Solve for $ w $ in the quadratic optimization problem:
   $$\min_w w^T \Sigma w + (\beta_\mathsf{X}-1)^2$$
-  subject to $ \sum\_{i=1}^n w_i = 1 $ and other constraints.
+  subject to $\sum\_{i=1}^n w_i = 1$ and other constraints.
 - **Maximize Utility** (e.g., Sharpe Ratio): Maximize
-  $$ \frac{w^T \mu - r*f}{\sqrt{w^T \Sigma w}} - (\beta*\mathsf{X}-1)^2$$
-  where $ r_f $ is the risk-free rate.
+  $$\frac{w^T \mu - r*f}{\sqrt{w^T \Sigma w}} - (\beta \mathsf{X}-1)^2$$
+  where $r_f$ is the risk-free rate.
